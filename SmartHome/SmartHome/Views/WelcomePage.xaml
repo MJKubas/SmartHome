@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             Title="{Binding Title}"
+             x:Class="SmartHome.Views.WelcomePage">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Refresh" Command="{Binding RefreshButton}" />
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <StackLayout BackgroundColor="#363435">
+            <Label LineBreakMode="WordWrap" FontSize="Body" HorizontalOptions="FillAndExpand" Text="{Binding Text}" Margin="8" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" TextColor="#56c465"/>
+            <ScrollView Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" Grid.RowSpan="2">
+                <Grid x:Name="mainGrid" BackgroundColor="#363435">
+
+                </Grid>
+            </ScrollView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
