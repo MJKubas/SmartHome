@@ -42,54 +42,20 @@ namespace SmartHome.ViewModels
 
         private async Task AddDetectedDevices()
         {
-            List<SensorDevice> sensorDevices = new List<SensorDevice>();
-
+            _mainDevice = await TaskService.GetInfoAsync(_mainDevice.DeviceName, _mainDevice.IpAddress);
             var mqttClient = await MqttClientAndSubscribe();
 
             for (int i = 0; i < _mainDevice.ConnectedDevices.Count; i++)
             {
-                switch (_mainDevice.ConnectedDevices[i].Type)
-                {
-                    case "CameraSensor":
-                        CameraSensor cameraSensor = new CameraSensor { Topic = _mainDevice.ConnectedDevices[i].Topic };
-                        sensorDevices.Add(cameraSensor);
-                        break;
-                    case "HumiditySensor":
-                        HumiditySensor humiditySensor = new HumiditySensor { Topic = _mainDevice.ConnectedDevices[i].Topic };
-                        sensorDevices.Add(humiditySensor);
-                        break;
-                    case "MotionSensor":
-                        MotionSensor motionSensor = new MotionSensor { Topic = _mainDevice.ConnectedDevices[i].Topic };
-                        sensorDevices.Add(motionSensor);
-                        break;
-                    case "RfidSensor":
-                        RfidSensor rfidSensor = new RfidSensor { Topic = _mainDevice.ConnectedDevices[i].Topic };
-                        sensorDevices.Add(rfidSensor);
-                        break;
-                    case "SoundSensor":
-                        SoundSensor soundSensor = new SoundSensor { Topic = _mainDevice.ConnectedDevices[i].Topic };
-                        sensorDevices.Add(soundSensor);
-                        break;
-                    case "TemperatureSensor":
-                        TemperatureSensor temperatureSensor = new TemperatureSensor { Topic = _mainDevice.ConnectedDevices[i].Topic };
-                        sensorDevices.Add(temperatureSensor);
-                        break;
-                    default:
-                        SensorDevice unknownSensor = new SensorDevice { Topic = _mainDevice.ConnectedDevices[i].Topic, Type = _mainDevice.ConnectedDevices[i].Type };
-                        sensorDevices.Add(unknownSensor);
-                        break;
-                };
-
                 await mqttClient.SubscribeAsync(_mainDevice.ConnectedDevices[i].Topic, MqttQualityOfService.ExactlyOnce); //QoS2
-                _grid.Children.Add(sensorDevices[i].CreateViewMqtt(mqttClient), 0, i);
+                _grid.Children.Add(_mainDevice.ConnectedDevices[i].CreateViewMqtt(mqttClient), 0, i);
             }
-            _mainDevice.ConnectedDevices = sensorDevices;
         }
 
         public void Refresh()
         {
             _grid.Children.Clear();
-            if(_mainDevice.ConnectedDevices.Count != 0)
+            if(_mainDevice != null && _mainDevice.ConnectedDevices.Count != 0)
             {
                 foreach (SensorDevice device in _mainDevice.ConnectedDevices)
                 {
@@ -127,6 +93,7 @@ namespace SmartHome.ViewModels
                 }
             }
         }
+
 
         private async Task<IMqttClient> MqttClientAndSubscribe()
         {

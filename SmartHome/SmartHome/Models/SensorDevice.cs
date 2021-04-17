@@ -13,6 +13,7 @@ namespace SmartHome.Models
     {
         public string Type { get; set; }
         public string Topic { get; set; }
+        public string View { get; set; }
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
         Label sensorValue = new Label() { Text = "Initializing", FontSize = 15, BackgroundColor=Color.FromHex("#56c465")};
         Frame sensorTile = new Frame() { CornerRadius = 30, BorderColor = Color.Black, Padding = 0 };

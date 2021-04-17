@@ -1,0 +1,20 @@
+﻿{
+  "DeviceName": "string",
+  "ConnectedDevices": [
+    {
+      "Type": "string",
+      "Topic": "string",
+      "View": "string"
+    },
+    {
+      "Type": "string",
+      "Topic": "string",
+      "View": "string"
+    },
+    {
+      "Type": "string",
+      "Topic": "string",
+      "View": "string"
+    }
+  ]
+}

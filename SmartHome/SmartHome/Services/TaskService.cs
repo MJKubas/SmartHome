@@ -1,16 +1,10 @@
 ﻿using Newtonsoft.Json;
 using SmartHome.Models;
-using SmartHome.Models.Sensors;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Xamarin.Essentials;
-using Xamarin.Forms;
-using System.Net.Mqtt;
 
 namespace SmartHome.Services
 {
@@ -47,29 +41,29 @@ namespace SmartHome.Services
             return null;
         }
 
-        public async Task<string> GetInfoAsync(string address, CancellationToken token)
+        public async Task<MainDevice> GetInfoAsync(string deviceName, string address)
         {
-            var request = new HttpRequestMessage();
-            request.RequestUri = new Uri("http://" + address);
-            request.Method = HttpMethod.Get;
+            AuthRequest auth = new AuthRequest(deviceName);
+            var jsonData = JsonConvert.SerializeObject(auth);
+            //string jsonData = "{\"AuthToken\":\"TEST\"}";
+            string uri = "http://" + address + ":8080/register";
             var client = new HttpClient();
             try
             {
-                Console.WriteLine(address + "GET");
-                HttpResponseMessage response = await client.SendAsync(request, token);
+                HttpResponseMessage response = await client.PostAsync(uri, new StringContent(jsonData, Encoding.UTF8, "application/json"));
+                response.EnsureSuccessStatusCode();
 
-                if (response.IsSuccessStatusCode)
-                {
-                    HttpContent content = response.Content;
-                    var result = await content.ReadAsStringAsync();
-                    return result;
-                }
+                HttpContent content = response.Content;
+                var result = await content.ReadAsStringAsync();
+                MainDevice mainDevice = JsonConvert.DeserializeObject<MainDevice>(result);
+                mainDevice.IpAddress = address;
+                return mainDevice;
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
             }
-            return "";
+            return null;
         }
     }
 }
