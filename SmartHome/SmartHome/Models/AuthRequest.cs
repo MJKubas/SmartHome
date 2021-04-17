@@ -18,7 +18,6 @@ namespace SmartHome.Models
 
         public string GenerateToken()
         {
-            donexzcx
             //var now = DateTime.Now.ToString("MM/dd/yyyy hh:mm");
             //string binaryNow = ToBinary(ConvertToByteArray(now, Encoding.ASCII));
             //string binaryDeviceName = ToBinary(ConvertToByteArray(DeviceName, Encoding.ASCII));
