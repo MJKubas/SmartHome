@@ -7,13 +7,15 @@ namespace SmartHome.Models
 {
     class AuthRequest
     {
-        public AuthRequest(string deviceName)
+        public AuthRequest(string deviceName, string mqttType)
         {
             DeviceName = deviceName;
+            MqttType = mqttType;
             AuthToken = GenerateToken();
         }
         public string AuthToken;
         public string MqttType;
+        public SensorDevice Device;
         private string DeviceName;
 
         public string GenerateToken()

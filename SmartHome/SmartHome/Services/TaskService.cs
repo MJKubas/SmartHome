@@ -43,9 +43,8 @@ namespace SmartHome.Services
 
         public async Task<MainDevice> GetInfoAsync(string deviceName, string address)
         {
-            AuthRequest auth = new AuthRequest(deviceName);
+            AuthRequest auth = new AuthRequest(deviceName, "Viewer");
             var jsonData = JsonConvert.SerializeObject(auth);
-            //string jsonData = "{\"AuthToken\":\"TEST\"}";
             string uri = "http://" + address + ":8080/register";
             var client = new HttpClient();
             try
