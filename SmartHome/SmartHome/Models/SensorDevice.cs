@@ -15,7 +15,12 @@ namespace SmartHome.Models
         public string Topic { get; set; }
         public string View { get; set; }
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
-        Label sensorValue = new Label() { Text = "Initializing", FontSize = 15, BackgroundColor=Color.FromHex("#56c465"), Padding = new Thickness(10, 5, 10, 10) };
+        Label sensorValue = new Label() { Text = "Initializing", 
+            FontSize = 15, 
+            BackgroundColor=Color.FromHex("#56c465"), 
+            Padding = new Thickness(10, 5, 10, 10),
+            HorizontalTextAlignment = TextAlignment.Center};
+
         Frame sensorTile = new Frame() { CornerRadius = 30, BorderColor = Color.Black, Padding = 0 };
 
         public virtual void stopGetingValues()
@@ -27,7 +32,10 @@ namespace SmartHome.Models
         {
             StackLayout stackLayout = new StackLayout() { BackgroundColor = Color.FromHex("#56c465"), Padding = new Thickness(10,5,10,5) };
             
-            Label sensorLabel = new Label() { Text = "This is " + Type + " " + Topic, FontSize = 15, BackgroundColor = Color.FromHex("#56c465"), Padding = new Thickness(10,10,10,5)};
+            Label sensorLabel = new Label() { Text = "This is " + Type + " " + Topic, 
+                FontSize = 15, 
+                BackgroundColor = Color.FromHex("#56c465"), 
+                Padding = new Thickness(10,10,10,5)};
 
             Task.Factory.StartNew(async () =>
             {
