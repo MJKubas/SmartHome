@@ -16,7 +16,6 @@ namespace SmartHome.ViewModels
         private TaskService _taskService;
         public TaskService TaskService => _taskService ?? (_taskService = InitializeTaskService());
 
-        public IDataStore<Item> DataStore => DependencyService.Get<IDataStore<Item>>();
 
         private string _status = "Status: \n";
         public string Status

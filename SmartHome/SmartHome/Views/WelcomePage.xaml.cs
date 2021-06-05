@@ -1,4 +1,5 @@
-﻿using SmartHome.ViewModels;
+﻿using SmartHome.Models;
+using SmartHome.ViewModels;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -13,10 +14,25 @@ namespace SmartHome.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class WelcomePage : ContentPage
     {
+        WelcomePageViewModel welcomePage;
         public WelcomePage()
         {
             InitializeComponent();
-            BindingContext = new WelcomePageViewModel(mainGrid);
+            welcomePage = new WelcomePageViewModel();
+            //BindingContext = new WelcomePageViewModel();
+            BindingContext = welcomePage;
+        }
+
+        private async void ListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
+        {
+            var sensor = ((ListView)sender).SelectedItem as SensorDevice;
+            if (sensor == null) return;
+            await Navigation.PushAsync(new SensorDetailPage(sensor, welcomePage.GetMainDeviceAddress()));
+        }
+
+        private void ListView_ItemTapped(object sender, ItemTappedEventArgs e)
+        {
+            ((ListView)sender).SelectedItem = null;
         }
     }
 }

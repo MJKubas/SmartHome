@@ -6,11 +6,51 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\default.png" />
+    <None Remove="Assets\humDefault.png" />
+    <None Remove="Assets\humHigh.png" />
+    <None Remove="Assets\humLow.png" />
+    <None Remove="Assets\humMid.png" />
+    <None Remove="Assets\soundDefault.png" />
+    <None Remove="Assets\soundHigh.png" />
+    <None Remove="Assets\soundLow.png" />
+    <None Remove="Assets\soundMid.png" />
+    <None Remove="Assets\tempCold.png" />
+    <None Remove="Assets\tempDefault.png" />
+    <None Remove="Assets\tempHot.png" />
+    <None Remove="Assets\tempWarm.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\humDefault.png" />
+    <EmbeddedResource Include="Assets\soundDefault.png" />
+    <EmbeddedResource Include="Assets\soundHigh.png" />
+    <EmbeddedResource Include="Assets\soundLow.png" />
+    <EmbeddedResource Include="Assets\soundMid.png" />
+    <EmbeddedResource Include="Assets\tempCold.png" />
+    <EmbeddedResource Include="Assets\default.png" />
+    <EmbeddedResource Include="Assets\tempDefault.png" />
+    <EmbeddedResource Include="Assets\tempHot.png" />
+    <EmbeddedResource Include="Assets\humHigh.png" />
+    <EmbeddedResource Include="Assets\humLow.png" />
+    <EmbeddedResource Include="Assets\humMid.png" />
+    <EmbeddedResource Include="Assets\tempWarm.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microcharts.Forms" Version="1.0.0-preview1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Refractored.MvvmHelpers" Version="1.6.2" />
+    <PackageReference Include="SkiaSharp.Views.Forms" Version="2.80.3-preview.18" />
     <PackageReference Include="System.Net.Mqtt" Version="0.6.14-beta" />
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.2012" />  
     <PackageReference Include="Xamarin.Essentials" Version="1.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\SensorDetailPage.xaml.cs">
+      <DependentUpon>SensorDetailPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>

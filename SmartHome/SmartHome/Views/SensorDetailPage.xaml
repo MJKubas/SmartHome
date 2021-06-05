@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewmodels="clr-namespace:SmartHome.ViewModels" 
+             xmlns:microcharts="clr-namespace:Microcharts.Forms;assembly=Microcharts.Forms"
+             mc:Ignorable="d"
+             x:Class="SmartHome.Views.SensorDetailPage"
+             Title="{Binding Title}"
+             x:Name="BrowseItemsPage"
+             x:DataType="viewmodels:SensorDetailViewModel">
+
+    <StackLayout BackgroundColor="LightGray"  Padding="7">
+        <Label Text="{Binding Sensor.Topic}" TextColor="LimeGreen" FontSize="Large" FontAttributes="Bold" Margin="10"/>
+        <Frame CornerRadius="20" HasShadow="True" BackgroundColor="WhiteSmoke">
+            <StackLayout>
+                <microcharts:ChartView x:Name="chart" Chart="{Binding LineChart}" HeightRequest="200"/>
+                <Label Text="Average value per Day" TextColor="LimeGreen" FontSize="Large" FontAttributes="Bold" HorizontalTextAlignment="Center"/>
+            </StackLayout>
+        </Frame>
+        
+    </StackLayout>
+
+</ContentPage>

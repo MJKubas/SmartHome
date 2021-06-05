@@ -1,8 +1,8 @@
 ﻿using MvvmHelpers.Commands;
 using SmartHome.Models;
-using SmartHome.Models.Sensors;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Net.Mqtt;
@@ -16,21 +16,22 @@ namespace SmartHome.ViewModels
 {
     public class WelcomePageViewModel : BaseViewModel
     {
-        Grid _grid;
         MainDevice _mainDevice;
         public ICommand RefreshButton { get; set; }
         private readonly string MqttClientId = "androidApp";
         private CancellationTokenSource GetValueCancellation = new CancellationTokenSource();
-        public WelcomePageViewModel(Grid grid)
+        public ObservableCollection<SensorDevice> devicesList { get; set; }
+
+        public WelcomePageViewModel()
         {
             Title = "Your Smart Home";
-            _grid = grid;
+            devicesList = new ObservableCollection<SensorDevice>();
             GetMainDevice();
             
             RefreshButton = new MvvmHelpers.Commands.Command(Refresh);
         }
 
-        private string _text = "Please wait for the connection with Your main device";
+        private string _text = "Please wait for the connection...";
 
         public string Text
         {
@@ -48,13 +49,14 @@ namespace SmartHome.ViewModels
             for (int i = 0; i < _mainDevice.ConnectedDevices.Count; i++)
             {
                 await mqttClient.SubscribeAsync(_mainDevice.ConnectedDevices[i].Topic, MqttQualityOfService.ExactlyOnce); //QoS2
-                _grid.Children.Add(_mainDevice.ConnectedDevices[i].CreateViewMqtt(mqttClient), 0, i);
+                _mainDevice.ConnectedDevices[i].StartGettingValues(mqttClient);
+                devicesList.Add(_mainDevice.ConnectedDevices[i]);
             }
         }
 
         public void Refresh()
         {
-            _grid.Children.Clear();
+            devicesList.Clear();
             if(_mainDevice != null && _mainDevice.ConnectedDevices.Count != 0)
             {
                 foreach (SensorDevice device in _mainDevice.ConnectedDevices)
@@ -70,7 +72,7 @@ namespace SmartHome.ViewModels
         public async Task GetMainDevice()
         {
             CancellationTokenSource tokenSource = new CancellationTokenSource();
-            string gate_ip = "192.168.0.104";//NetworkGateway();
+            string gate_ip = "192.168.1.104";//NetworkGateway();
             var tasks = new List<Task<MainDevice>>();
             string[] array = gate_ip.Split('.');
             for (int i = 2; i <= 255; i++)
@@ -123,6 +125,11 @@ namespace SmartHome.ViewModels
                 return IpAddress.ToString();
             }
             return null;
+        }
+
+        public string GetMainDeviceAddress()
+        {
+            return _mainDevice.IpAddress;
         }
 
     }
