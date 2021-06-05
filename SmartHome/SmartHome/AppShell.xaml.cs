@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SmartHome.Views;
+using System;
 using System.Collections.Generic;
 
 using Xamarin.Forms;

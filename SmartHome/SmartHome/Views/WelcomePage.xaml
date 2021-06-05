@@ -2,7 +2,10 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:viewmodels="clr-namespace:SmartHome.ViewModels" 
+             xmlns:model="clr-namespace:SmartHome.Models"
+             x:DataType="viewmodels:WelcomePageViewModel"
              mc:Ignorable="d"
              Title="{Binding Title}"
              x:Class="SmartHome.Views.WelcomePage">
@@ -10,13 +13,28 @@
         <ToolbarItem Text="Refresh" Command="{Binding RefreshButton}" />
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
-        <StackLayout BackgroundColor="#363435">
-            <Label LineBreakMode="WordWrap" FontSize="Body" HorizontalOptions="FillAndExpand" Text="{Binding Text}" Margin="8" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" TextColor="#56c465"/>
-            <ScrollView Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" Grid.RowSpan="2">
-                <Grid x:Name="mainGrid" BackgroundColor="#363435">
-
-                </Grid>
-            </ScrollView>
+        <StackLayout BackgroundColor="LightGray">
+            <Label LineBreakMode="WordWrap" FontSize="Large" HorizontalOptions="Center" Text="{Binding Text}" Margin="0,20,0,0" TextColor="LimeGreen" FontAttributes="Bold"/>
+            <ListView BackgroundColor="LightGray" ItemsSource="{Binding devicesList}" HasUnevenRows="True" ItemSelected="ListView_ItemSelected" ItemTapped="ListView_ItemTapped">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="model:SensorDevice">
+                        <ViewCell>
+                            <Grid Padding="7">
+                                <Frame CornerRadius="20"
+                                           HasShadow="True" BackgroundColor="WhiteSmoke">
+                                    <StackLayout Orientation="Horizontal">
+                                        <Image Source="{Binding Image}" WidthRequest="30"/>
+                                        <StackLayout VerticalOptions="Center">
+                                            <Label Margin="15,0,0,0" VerticalOptions="Center" FontSize="Large" FontAttributes="Bold" TextColor="LimeGreen" Text="{Binding Topic}"/>
+                                            <Label Margin="15,0,0,0" VerticalOptions="Center" FontSize="Large" TextColor="Black" Text="{Binding Value}"/>
+                                        </StackLayout>
+                                    </StackLayout>
+                                </Frame>
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

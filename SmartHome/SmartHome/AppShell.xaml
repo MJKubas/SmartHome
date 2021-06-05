@@ -13,7 +13,7 @@
     -->
     <Shell.Resources>
         <ResourceDictionary>
-            <Color x:Key="NavigationPrimary">#56c465</Color>
+            <Color x:Key="NavigationPrimary">LightGray</Color>
             <!-- #56c465 zielony, #363435 szary -->
             <Style x:Key="BaseStyle" TargetType="Element">
                 <Setter Property="Shell.BackgroundColor" Value="{StaticResource NavigationPrimary}" />
@@ -33,10 +33,7 @@
     <!-- Your Pages -->
     <TabBar>
         <Tab Title="Welcome Page" Icon="tab_home.png">
-            <ShellContent ContentTemplate="{DataTemplate local:WelcomePage}"/>
-        </Tab>
-        <Tab Title="Browse" Icon="tab_feed.png">
-            <ShellContent ContentTemplate="{DataTemplate local:ItemsPage}" />
+            <ShellContent ContentTemplate="{DataTemplate local:WelcomePage}" Route="welcomePage"/>
         </Tab>
         <Tab Title="About" Icon="tab_about.png">
             <ShellContent ContentTemplate="{DataTemplate local:AboutPage}" />
