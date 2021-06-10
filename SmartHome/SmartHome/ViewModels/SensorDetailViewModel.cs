@@ -48,14 +48,19 @@ namespace SmartHome.ViewModels
             foreach (var element in SensorData)
             {
                 float value;
-                if(float.TryParse(element.avgValue, out value))
+                string avg = element.avgValue;
+
+                int index = avg.IndexOf(".");
+                if (index > 0)
+                    avg = avg.Substring(0, index);
+
+                if (float.TryParse(avg, out value))
                 {
-                    int intValue = (int)value;
                     var parsedDate = DateTime.Parse(element.day);
-                    ChartEntry chartEntry = new ChartEntry(intValue)
+                    ChartEntry chartEntry = new ChartEntry(value)
                     {
                         Label = parsedDate.ToString("dd-MM-yyyy"),
-                        ValueLabel = intValue.ToString(),
+                        ValueLabel = avg,
                         Color = SKColor.Parse("#56c465")
                     };
                     entryList.Add(chartEntry);

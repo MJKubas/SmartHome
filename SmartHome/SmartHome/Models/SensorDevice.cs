@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net.Mqtt;
@@ -77,6 +79,10 @@ namespace SmartHome.Models
                                     break;
                             }
                         }
+                        else
+                        {
+                            this.Image = ImageSource.FromResource("SmartHome.Assets.default.png");
+                        }
                     }
                     else if (View == "text")
                     {
@@ -97,6 +103,10 @@ namespace SmartHome.Models
                                     this.Image = ImageSource.FromResource("SmartHome.Assets.soundDefault.png");
                                     break;
                             }
+                        }
+                        else
+                        {
+                            this.Image = ImageSource.FromResource("SmartHome.Assets.default.png");
                         }
                     }
                     else if (View == "switch")
@@ -122,6 +132,7 @@ namespace SmartHome.Models
 
         public void StartGettingValues(IMqttClient mqttClient)
         {
+            MqttMessage mqttMessage;
             Task.Factory.StartNew(async () =>
             {
                 string result = "No data gathered yet";
@@ -133,10 +144,20 @@ namespace SmartHome.Models
                         .Where(msg => msg.Topic == Topic)
                         .Subscribe(msg => result = Encoding.Default.GetString(msg.Payload));
 
-                    Device.BeginInvokeOnMainThread(() =>
+                    if(result != "No data gathered yet")
                     {
-                        Value = result;
-                    });
+                        mqttMessage = JsonConvert.DeserializeObject<MqttMessage>(result);
+
+                        Device.BeginInvokeOnMainThread(() =>
+                        {
+                            Value = mqttMessage.Value;
+                        });
+                    }
+                    else
+                    {
+                        Value = "No data gathered yet";
+                    }
+                    
                 }
             }, TaskCreationOptions.LongRunning);
         }

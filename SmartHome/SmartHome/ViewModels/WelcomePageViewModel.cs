@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Net.Mqtt;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,6 +21,7 @@ namespace SmartHome.ViewModels
         public ICommand RefreshButton { get; set; }
         private readonly string MqttClientId = "androidApp";
         private CancellationTokenSource GetValueCancellation = new CancellationTokenSource();
+        private CancellationTokenSource tokenSource = new CancellationTokenSource();
         public ObservableCollection<SensorDevice> devicesList { get; set; }
 
         public WelcomePageViewModel()
@@ -46,6 +48,9 @@ namespace SmartHome.ViewModels
             _mainDevice = await TaskService.GetInfoAsync(_mainDevice.DeviceName, _mainDevice.IpAddress);
             var mqttClient = await MqttClientAndSubscribe();
 
+            await mqttClient.SubscribeAsync("alert", MqttQualityOfService.ExactlyOnce);
+            StartCheckingAlert(mqttClient);
+
             for (int i = 0; i < _mainDevice.ConnectedDevices.Count; i++)
             {
                 await mqttClient.SubscribeAsync(_mainDevice.ConnectedDevices[i].Topic, MqttQualityOfService.ExactlyOnce); //QoS2
@@ -54,9 +59,37 @@ namespace SmartHome.ViewModels
             }
         }
 
+        public void StartCheckingAlert(IMqttClient mqttClient)
+        {
+            MqttMessage mqttMessage;
+            Task.Factory.StartNew(async () =>
+            {
+                string result = "off";
+                while (!tokenSource.Token.IsCancellationRequested)
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(1));
+                    mqttClient
+                        .MessageStream
+                        .Where(msg => msg.Topic == "alert")
+                        .Subscribe(msg => result = Encoding.Default.GetString(msg.Payload));
+
+                    if (result == "on")
+                    {
+                        var answer = await App.Current.MainPage.DisplayAlert("ALERT!", "Something is wrong, disable alarm?", "Yes", "No");
+                        if (answer)
+                        {
+                            var message = new MqttApplicationMessage("alert", Encoding.UTF8.GetBytes("off"));
+                            await mqttClient.PublishAsync(message, MqttQualityOfService.ExactlyOnce); //QoS0
+                        }
+                    }
+                }
+            }, TaskCreationOptions.LongRunning);
+        }
+
         public void Refresh()
         {
             devicesList.Clear();
+            tokenSource.Cancel();
             if(_mainDevice != null && _mainDevice.ConnectedDevices.Count != 0)
             {
                 foreach (SensorDevice device in _mainDevice.ConnectedDevices)
@@ -72,7 +105,7 @@ namespace SmartHome.ViewModels
         public async Task GetMainDevice()
         {
             CancellationTokenSource tokenSource = new CancellationTokenSource();
-            string gate_ip = "192.168.1.104";//NetworkGateway();
+            string gate_ip = "192.168.0.104";//NetworkGateway();
             var tasks = new List<Task<MainDevice>>();
             string[] array = gate_ip.Split('.');
             for (int i = 2; i <= 255; i++)
